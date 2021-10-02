@@ -10,6 +10,7 @@
         android:name="com.shopping.shoppingapp.Authentication.AuthFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
+
         <action
             android:id="@+id/action_authFragment_to_displayShopsFragment"
             app:destination="@id/displayShopsFragment" />
@@ -17,6 +18,5 @@
     <fragment
         android:id="@+id/displayShopsFragment"
         android:name="com.shopping.shoppingapp.displayshops.DisplayShopsFragment"
-        android:label="fragment_display_shops"
-        tools:layout="@layout/fragment_display_shops" />
+        android:label="DisplayShopsFragment" />
 </navigation>

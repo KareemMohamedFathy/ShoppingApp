@@ -40,12 +40,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.android.gms.tasks.OnCompleteListener
@@ -55,11 +56,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
-import com.shopping.app.db.Shop
-import com.shopping.app.db.User
 import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
-import com.shopping.shoppingapp.displayshops.DisplayShopsFragment
+import com.shopping.shoppingapp.DB.Shop
+import com.shopping.shoppingapp.DB.User
+import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
+import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShopViewModel
+import com.shopping.shoppingapp.SellerHomePage.MyShop.ProductPhotos
+import com.shopping.shoppingapp.SellerHomePage.SellerHomePage
 import com.shopping.shoppingapp.ui.theme.MyApplicationTheme
 import kotlinx.coroutines.*
 import java.io.File
@@ -69,8 +73,9 @@ class AuthFragment : Fragment() {
     private val auth= FirebaseAuth.getInstance()
     private var oldPath=""
     companion object {
-        private const val MY_PERMISSION_CODE = 124
-     }
+         const val MY_PERMISSION_CODE = 124
+
+    }
 
 
 private  var picturePath: String=""
@@ -99,6 +104,8 @@ override fun onCreateView(
     @ExperimentalCoilApi
     @Composable
     private fun Navigation() {
+       var myShopViewModel:MyShopViewModel = viewModel()
+
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = Screen.Login.route) {
             composable(
@@ -115,6 +122,28 @@ override fun onCreateView(
                 route = Screen.CreateShop.route
             ) {
                 CreateShop(navController)
+            }
+            composable(
+                route = Screen.SellerHomePage.route
+            ) {
+                SellerHomePage(navController)
+            }
+            composable(
+                route = Screen.MyShop.route
+            ) {
+
+                MyShop(navController)
+            }
+            composable(
+                route = Screen.ProductPhotos.route+"/{index}",
+                arguments = listOf(
+                    navArgument("index"){
+                    }
+                )
+            ) {
+                    entry->
+                ProductPhotos(navController = navController,index = entry.arguments?.getString("index")!!)
+
             }
 
         }
@@ -212,7 +241,9 @@ override fun onCreateView(
             }
             else if(userType=="Buyer"){
                 findNavController().navigate(R.id.displayShopsFragment)
-
+            }
+            else{
+                navController.navigate(Screen.SellerHomePage.route)
             }
         }
         }
@@ -402,7 +433,7 @@ override fun onCreateView(
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {addShopToDb(name.text,pickedImage.value)}
+            Button(onClick = {addShopToDb(name.text,pickedImage.value,navController)}
 
                  ,  modifier = Modifier
                     .fillMaxWidth(),
@@ -414,7 +445,7 @@ override fun onCreateView(
         }
     }
 
-    private fun addShopToDb(name: String, pickedImage: String?) {
+    private fun addShopToDb(name: String, pickedImage: String?, navController: NavController) {
         val lol =   FirebaseDatabase.getInstance().getReference("User").child(auth.currentUser!!.uid).get().addOnSuccessListener {
             shop_id=it.child("shop_id").value.toString()
             val type:String=it.child("type").value.toString()
@@ -426,12 +457,13 @@ override fun onCreateView(
             var  dbReference=firebaseDatabase.getReference("Shop")
             val id=auth.currentUser!!.uid
             val storeId = dbReference.push().key.toString()
-            val shop= Shop(name, pickedImage!!,id,storeId)
+            val shop= Shop(name, pickedImage!!,storeId,id)
             dbReference.child(storeId).setValue(shop)
               dbReference=firebaseDatabase.getReference("User")
 
             updateUser.shop_id=storeId
             dbReference.child(auth.currentUser!!.uid).setValue(updateUser)
+            navController.navigate(Screen.SellerHomePage.route)
 
         }
 
@@ -456,12 +488,15 @@ override fun onCreateView(
                     userType=choice
                     val user= User(name,email,choice,id)
                     dbReference.child(id).setValue(user)
-                    if(userType=="Seller") {
+                    if(userType=="Seller"&&TextUtils.isEmpty(shop_id)) {
                         Log.d("kuso",userType)
                         navController.navigate(Screen.CreateShop.route)
                     }
                     else if(userType=="Buyer"){
                         findNavController().navigate(R.id.displayShopsFragment)
+                    }
+                    else{
+                        navController.navigate(Screen.SellerHomePage.route)
                     }
 
                 }
@@ -530,15 +565,14 @@ override fun onCreateView(
             if (result.resultCode == Activity.RESULT_OK) {
 
                     val selectedImage = result.data!!.data
-                    picturePath = selectedImage.toString()
-                uploadImageToFirebase(picturePath.toUri())
+
+                uploadImageToFirebase(selectedImage!!)
             }
         }
 
     private fun uploadImageToFirebase(fileUri: Uri) {
 
         if (fileUri != null) {
-
             val fileName = UUID.randomUUID().toString() +".jpg"
 
             val database = FirebaseDatabase.getInstance()

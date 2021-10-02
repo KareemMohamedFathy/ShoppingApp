@@ -1,4 +1,4 @@
-package com.shopping.app.db
+package com.shopping.shoppingapp.DB
 
 data class User(
     var name:String="",

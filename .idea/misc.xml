@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Bachelor/ShoppingApp/app/src/main/res/drawable/ic_next_button.xml" value="0.1" />
+        <entry key="..\:/Bachelor/ShoppingApp/app/src/main/res/drawable/ic_send.xml" value="0.1" />
+        <entry key="..\:/Bachelor/ShoppingApp/app/src/main/res/layout/activity_add_product.xml" value="0.1" />
         <entry key="..\:/Bachelor/ShoppingApp/app/src/main/res/layout/activity_main.xml" value="0.121875" />
+        <entry key="..\:/Bachelor/ShoppingApp/app/src/main/res/layout/fragment_add_product.xml" value="0.2421875" />
       </map>
     </option>
   </component>
