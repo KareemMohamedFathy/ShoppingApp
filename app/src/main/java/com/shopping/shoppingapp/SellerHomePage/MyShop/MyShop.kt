@@ -60,6 +60,9 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
         messagesList.addAll(myShopViewModel.messagesList)
         listState.animateScrollToItem(messagesList.size-1)
     }
+    BackHandler() {
+        navController.popBackStack()
+    }
 
 
     Log.d("kuso", messagesList.size.toString())
@@ -101,29 +104,46 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
                                     shape = RoundedCornerShape(16.dp),
 
                                     ) {
-                                    Image(
-                                        painter = rememberImagePainter(
-                                            messagesList[index].images?.getOrNull(
-                                                0
-                                            )
-                                        ),
-                                        contentDescription = "",
+                                    Box(
                                         Modifier
                                             .fillMaxWidth()
                                             .height(250.dp)
-                                            .clickable(onClick = {
-                                                var connectionsJSONString =
-                                                    Gson().toJson(messagesList[index].images)
-                                                myShopViewModel.imageList.addAll(messagesList[index].images)
-                                                navController.navigate(
-                                                    Screen.ProductPhotos.withArgs(index.toString())
+                                    ) {
+
+
+
+                                        Image(
+                                            painter = rememberImagePainter(
+                                                messagesList[index].images?.getOrNull(
+                                                    0
                                                 )
-                                            }),
-                                        contentScale = ContentScale.FillBounds
-                                    )
+                                            ),
+                                            contentDescription = "",
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .height(250.dp)
+                                                .clickable(onClick = {
+                                                    var connectionsJSONString =
+                                                        Gson().toJson(messagesList[index].images)
+                                                    myShopViewModel.imageList.addAll(messagesList[index].images)
+                                                    navController.navigate(
+                                                        Screen.ProductPhotos.withArgs(index.toString())
+                                                    )
+                                                }),
+                                            contentScale = ContentScale.FillBounds
+                                        )
+                                        if(messagesList[index].images.size>1) {
+                                            Text(
+                                                text = "+${messagesList[index].images.size}",
+                                                fontSize = 35.sp,
+                                                color = Color.White,
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.align(alignment = Alignment.Center)
+                                            )
+                                        }
 
+                                    }
                                 }
-
                             }
                             Text(messagesList[index].message, color = Color.White, fontSize = 24.sp)
                             if(messagesList[index].images!!.size!=0) {
@@ -216,7 +236,7 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
                     .size(40.dp)
                     .clickable(onClick = {
                         scope.launch {
-                          //  messagesList.clear()
+                            //  messagesList.clear()
                             myShopViewModel.addChat(message)
                             messagesList.add(myShopViewModel.messagesList[messagesList.size])
 

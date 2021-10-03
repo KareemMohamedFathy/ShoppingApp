@@ -60,6 +60,7 @@ import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
 import com.shopping.shoppingapp.DB.Shop
 import com.shopping.shoppingapp.DB.User
+import com.shopping.shoppingapp.DisplayShops.DisplayShops
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShopViewModel
 import com.shopping.shoppingapp.SellerHomePage.MyShop.ProductPhotos
@@ -145,7 +146,12 @@ override fun onCreateView(
                 ProductPhotos(navController = navController,index = entry.arguments?.getString("index")!!)
 
             }
+            composable(
+                route = Screen.DisplayShops.route
+            ) {
 
+                DisplayShops(navController=navController)
+            }
         }
     }
 
@@ -240,7 +246,7 @@ override fun onCreateView(
                 navController.navigate(Screen.CreateShop.route)
             }
             else if(userType=="Buyer"){
-                findNavController().navigate(R.id.displayShopsFragment)
+                navController.navigate(Screen.DisplayShops.route)
             }
             else{
                 navController.navigate(Screen.SellerHomePage.route)
@@ -493,7 +499,7 @@ override fun onCreateView(
                         navController.navigate(Screen.CreateShop.route)
                     }
                     else if(userType=="Buyer"){
-                        findNavController().navigate(R.id.displayShopsFragment)
+                        navController.navigate(Screen.DisplayShops.route)
                     }
                     else{
                         navController.navigate(Screen.SellerHomePage.route)

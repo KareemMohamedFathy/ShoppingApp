@@ -41,6 +41,9 @@ fun CreateButton(name: String, navController: NavController){
         if(ButtonsName.MYSHOP==name){
             navController.navigate(Screen.MyShop.route)
         }
+        if(ButtonsName.ALLSHOPS==name){
+            navController.navigate(Screen.DisplayShops.route)
+        }
     },
         modifier = Modifier
             .fillMaxWidth()
@@ -51,3 +54,4 @@ fun CreateButton(name: String, navController: NavController){
         )
     }
 }
+
