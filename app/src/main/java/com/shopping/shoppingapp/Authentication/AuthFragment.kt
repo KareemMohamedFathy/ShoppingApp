@@ -61,6 +61,7 @@ import com.shopping.shoppingapp.Screen
 import com.shopping.shoppingapp.DB.Shop
 import com.shopping.shoppingapp.DB.User
 import com.shopping.shoppingapp.DisplayShops.DisplayShops
+import com.shopping.shoppingapp.DisplayShops.PrivateChats
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShopViewModel
 import com.shopping.shoppingapp.SellerHomePage.MyShop.ProductPhotos
@@ -136,6 +137,17 @@ override fun onCreateView(
                 MyShop(navController)
             }
             composable(
+                route = Screen.PrivateChats.route+"/{shopid}",
+                arguments = listOf(
+                    navArgument("shopid"){
+                    }
+                )
+            ) {
+                    entry->
+                PrivateChats(navController = navController,shopid = entry.arguments?.getString("shopid")!!)
+
+            }
+            composable(
                 route = Screen.ProductPhotos.route+"/{index}",
                 arguments = listOf(
                     navArgument("index"){
@@ -150,7 +162,7 @@ override fun onCreateView(
                 route = Screen.DisplayShops.route
             ) {
 
-                DisplayShops(navController=navController)
+                DisplayShops(navController)
             }
         }
     }

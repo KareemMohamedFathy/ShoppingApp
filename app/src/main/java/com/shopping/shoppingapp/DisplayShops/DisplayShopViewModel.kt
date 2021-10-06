@@ -26,9 +26,13 @@ class DisplayShopViewModel : ViewModel() {
                         val arr: ArrayList<Any?> = arrayListOf(sp.value)
                         val shopname = sp.child("name").value.toString()
                         val shopicon = sp.child("logo").value.toString()
+                        val shopidd = sp.child("shop_id").value.toString()
+                        val useridd = sp.child("user_id").value.toString()
                         val shop = Shop()
                         shop.name = shopname
                         shop.logo = shopicon
+                        shop.shop_id = shopidd
+                        shop.user_id = useridd
                         entrees.add(shopname)
                         shopi.add(shopicon)
                         shopss.add(shop)
