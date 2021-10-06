@@ -62,6 +62,7 @@ import com.shopping.shoppingapp.DB.Shop
 import com.shopping.shoppingapp.DB.User
 import com.shopping.shoppingapp.DisplayShops.DisplayShops
 import com.shopping.shoppingapp.DisplayShops.PrivateChats
+import com.shopping.shoppingapp.SellerHomePage.MyProducts.MyProducts
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShopViewModel
 import com.shopping.shoppingapp.SellerHomePage.MyShop.ProductPhotos
@@ -163,6 +164,12 @@ override fun onCreateView(
             ) {
 
                 DisplayShops(navController)
+            }
+            composable(
+                route = Screen.MyProducts.route
+            ) {
+
+                MyProducts(navController)
             }
         }
     }

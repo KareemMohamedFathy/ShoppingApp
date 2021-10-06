@@ -108,7 +108,12 @@ fun shopview(navController: NavController , shop: Shop){
 
         }
         if (isClicked){
-            navController.navigate(Screen.PrivateChats.withArgs(shop.shop_id.toString()))
+            navController.navigate(Screen.PrivateChats.withArgs(shop.shop_id.toString())) {
+                popUpTo(Screen.DisplayShops.route) {
+                    inclusive = true
+                }
+            }
+            isClicked=false
         }
 
     }

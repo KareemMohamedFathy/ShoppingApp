@@ -19,20 +19,17 @@ import kotlin.coroutines.suspendCoroutine
 class MyShopViewModel:ViewModel() {
         var shopName : MutableState<String> = mutableStateOf("")
     var shopId : MutableState<String> = mutableStateOf("")
-
     var shopLogo : MutableState<String> = mutableStateOf("")
+
       var productsList : MutableList<Product> = mutableStateListOf<Product>()
     var messagesList : MutableList<ShopChat> = mutableStateListOf<ShopChat>()
     var imageList : MutableList<String> = mutableStateListOf<String>()
 
 
     suspend fun  getShop() {
-
-
         val dbReference = FirebaseDatabase.getInstance().getReference()
         val auth = FirebaseAuth.getInstance()
         val query = dbReference.child("Shop").orderByChild("user_id").equalTo(auth.currentUser!!.uid)
-        val db: DatabaseReference = FirebaseDatabase.getInstance().getReference().child("user_id")
         val snapshot = query.getSnapshotValue()
         if (snapshot.exists()) {
             for (sp in snapshot.children) {
@@ -91,8 +88,8 @@ class MyShopViewModel:ViewModel() {
 
 suspend  fun getallProducts() {
         val dbReference = FirebaseDatabase.getInstance().getReference()
-        val dbref = dbReference.child("ShopChat")
-     val snapshot=dbref.getSnapshotValue()
+        val query = dbReference.child("ShopChat").orderByChild("shop_id").equalTo(shopId.value)
+     val snapshot=query.getSnapshotValue()
     if (snapshot.exists()) {
         for (sp in snapshot.children) {
             val message = sp.child("message").value.toString()

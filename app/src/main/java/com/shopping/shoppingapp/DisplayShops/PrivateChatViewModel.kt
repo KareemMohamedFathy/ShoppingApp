@@ -102,7 +102,7 @@ class PrivateChatViewModel: ViewModel() {
                 shopId.value = shopid
             }
         }
-        Log.d("tag",shopName.toString())
+        Log.d("tag2",shopLogo.toString())
 //        Log.d("tag",shopid)
 //        getShopmessages(shopid)
 

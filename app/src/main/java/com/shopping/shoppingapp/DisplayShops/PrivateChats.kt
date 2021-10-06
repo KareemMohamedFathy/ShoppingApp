@@ -52,13 +52,11 @@ fun PrivateChats(navController: NavController, shopid: String, privatechatsviewM
     var messagesList = remember { mutableStateListOf<Chat>() }
     val listState = rememberLazyListState()
     LaunchedEffect(key1 =Unit ) {
-        Log.d("kusoo","hi")
         messagesList.clear()
         privatechatsviewModel.getUser()
         privatechatsviewModel.getShop(shopid)
         shopName = privatechatsviewModel.shopName.value
-        shopLogo = privatechatsviewModel.shopLogo.toString()
-//        Log.d("tag",shopLogo)
+        shopLogo = privatechatsviewModel.shopLogo.value
         messagesList.addAll(privatechatsviewModel.messagesList)
         listState.animateScrollToItem(messagesList.size-1)
     }
