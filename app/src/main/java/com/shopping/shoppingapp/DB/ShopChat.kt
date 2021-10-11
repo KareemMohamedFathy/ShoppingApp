@@ -6,5 +6,6 @@ data class ShopChat(
     var time:String="",
     var images :ArrayList<String> =ArrayList(),
     var tags:ArrayList<String> =ArrayList(),
-    var shop_id:String=""
+    var shop_id:String="",
+
     )

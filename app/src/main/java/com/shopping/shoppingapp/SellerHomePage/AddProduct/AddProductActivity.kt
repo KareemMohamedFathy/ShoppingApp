@@ -325,6 +325,7 @@ class AddProductActivity : AppCompatActivity() {
     }
     fun getCurrentDate():String{
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+
         val currentDate = sdf.format(Date())
          return currentDate
     }

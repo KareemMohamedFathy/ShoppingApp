@@ -56,6 +56,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.shopping.shoppingapp.AdminHomePage.AdminHomePage
 import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
 import com.shopping.shoppingapp.DB.Shop
@@ -89,6 +90,7 @@ private lateinit var userType:String
 
 
 
+@ExperimentalMaterialApi
 override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -103,6 +105,7 @@ override fun onCreateView(
         }
     }
 
+    @ExperimentalMaterialApi
     @DelicateCoroutinesApi
     @ExperimentalCoilApi
     @Composable
@@ -170,6 +173,12 @@ override fun onCreateView(
             ) {
 
                 MyProducts(navController)
+            }
+            composable(
+                route = Screen.AdminHomePage.route
+            ) {
+
+                AdminHomePage(navController)
             }
         }
     }
@@ -267,8 +276,11 @@ override fun onCreateView(
             else if(userType=="Buyer"){
                 navController.navigate(Screen.DisplayShops.route)
             }
-            else{
+            else if(userType=="Seller"){
                 navController.navigate(Screen.SellerHomePage.route)
+            }
+            else{
+                navController.navigate(Screen.AdminHomePage.route)
             }
         }
         }
@@ -365,6 +377,10 @@ override fun onCreateView(
                 DropdownMenuItem(onClick = {choice="Seller"
                     expanded = false}) {
                     Text("Seller")
+                }
+                DropdownMenuItem(onClick = {choice="Admin"
+                    expanded = false}) {
+                    Text("Admin")
                 }
         }
             Spacer(modifier = Modifier.height(16.dp))
@@ -520,10 +536,12 @@ override fun onCreateView(
                     else if(userType=="Buyer"){
                         navController.navigate(Screen.DisplayShops.route)
                     }
-                    else{
+                    else if(userType=="Seller"){
                         navController.navigate(Screen.SellerHomePage.route)
                     }
-
+                    else if(userType=="Admin"){
+                        navController.navigate(Screen.AdminHomePage.route)
+                    }
                 }
                 else{
 
