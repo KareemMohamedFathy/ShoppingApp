@@ -14,6 +14,7 @@ import com.shopping.shoppingapp.SellerHomePage.MyShop.FValueEventListener
 import com.shopping.shoppingapp.SellerHomePage.MyShop.getCurrentDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -26,16 +27,16 @@ class PrivateChatViewModel: ViewModel() {
     var shopLogo : MutableState<String> = mutableStateOf("")
 //    var productsList : MutableList<Product> = mutableStateListOf<Product>()
     var messagesList : MutableList<Chat> = mutableStateListOf<Chat>()
+    var messagesList2 : MutableList<Chat> = mutableStateListOf<Chat>()
 
     var imageList : MutableList<String> = mutableStateListOf<String>()
-
-    var shopmessagesList : MutableList<ShopChat> = mutableStateListOf<ShopChat>()
-
+    var shopmessagesList : MutableList<Chat> = mutableStateListOf<Chat>()
 
 
 
 
-    suspend fun  getUser() {
+
+    suspend fun  getUser(shopid: String) {
 
         val dbReference = FirebaseDatabase.getInstance().getReference()
         val auth = FirebaseAuth.getInstance()
@@ -48,7 +49,7 @@ class PrivateChatViewModel: ViewModel() {
                 userId.value = sp.child("user_id").value.toString()
             }
         }
-
+        getmessages(shopid)
 
     }
 
@@ -102,9 +103,9 @@ class PrivateChatViewModel: ViewModel() {
                 shopId.value = shopid
             }
         }
-        Log.d("tag2",shopLogo.toString())
+//        Log.d("tag2",shopLogo.toString())
 //        Log.d("tag",shopid)
-//        getShopmessages(shopid)
+        getShopmessages(shopid)
 
 
     }
@@ -130,7 +131,7 @@ class PrivateChatViewModel: ViewModel() {
     suspend fun  getShopmessages(shopid: String){
         val dbReference = FirebaseDatabase.getInstance().getReference()
         val dbref = dbReference.child("ShopChat")
-        val query = dbref.child("shop_id").equalTo(shopid)
+        val query = dbref.orderByChild("shop_id").equalTo(shopid)
         val snapshot = query.getSnapshotValue()
         if (snapshot.exists()) {
             for (sp in snapshot.children) {
@@ -140,24 +141,93 @@ class PrivateChatViewModel: ViewModel() {
                 var shopimageList = sp.child("images").value
                 val  tags= sp.child("tags").value
                 if(shopimageList!=null) {
-                    val chat: ShopChat = ShopChat(
+                    val chat: Chat = Chat(
                         shopmessage.toString(), shopchatid, messagetime, shopimageList as ArrayList<String>,
                         tags as ArrayList<String>,
-                        shopid
+                        shopid, ""
                     )
                     shopmessagesList.add(chat)
                 }
                 else{
-                    val chat: ShopChat = ShopChat(
-                        shopmessage.toString(), shopchatid, messagetime,shop_id = shopid)
+                    val chat: Chat = Chat(
+                        shopmessage.toString(), shopchatid, messagetime,shop_id = shopid, user_id = "")
                     shopmessagesList.add(chat)
                 }
 
             }
         }
 
+    }
+
+
+    suspend  fun getmessages(shopid: String) {
+        val dbReference = FirebaseDatabase.getInstance().getReference()
+        val dbref = dbReference.child("Chat")
+        val query = dbref.orderByChild("user_id").equalTo(userId.value)
+//        val query = query1.orderByChild("shop_id").equalTo(shopid)
+        val snapshot=query.getSnapshotValue()
+        if (snapshot.exists()) {
+            for (sp in snapshot.children) {
+                if (sp.child("shop_id").value.toString().equals(shopid)){
+                    val message = sp.child("message").value.toString()
+                    val  chat_id= sp.child("chat_id").value.toString()
+                    val  shop_id= sp.child("shop_id").value.toString()
+                    val  tags= sp.child("tags").value
+                    val  time= sp.child("time").value.toString()
+                    var   images= sp.child("images").value
+                    if(images!=null) {
+                        val chat = Chat(
+                            message.toString(), chat_id, time, images as ArrayList<String>,
+                            tags as ArrayList<String>,
+                            shop_id,
+                            userId.toString()
+                        )
+                        messagesList.add(chat)
+                    }
+                    else{
+                        val chat = Chat(
+                            message.toString(), chat_id, time, shop_id = shop_id, user_id = userId.toString())
+                        messagesList.add(chat)
+                    }
+                }
+                //   val product=Product(productName,productPrice,productDescription,images,shop_id,product_id,tags,time)
+                //     productsList.add(product)
+            }
+
+        }
 
     }
+
+//    suspend fun sortbytime(msglist : MutableList<Chat>, msgList2 : MutableList<Chat>){
+//
+//
+//        for (item in msglist){
+//            val pattern = "dd/M/yyyy hh:mm:ss"
+//            val dateformat = SimpleDateFormat(pattern)
+//            val date1 = dateformat.parse(item.time)
+//
+//            for(msg in msgList2){
+//                val date2 = dateformat.parse(msg.time)
+//
+////                Log.d("tag", date2.toString())
+//                if (date1 < date2){
+//                    messagesList2.add(item)
+//                }else{
+//                    messagesList2.add(msg)
+//                    break
+//                }
+//
+//
+//            }
+//
+//        }
+//
+//        messagesList.removeAll(messagesList)
+//        messagesList.addAll(messagesList2)
+//
+//
+//
+//    }
 
 
 

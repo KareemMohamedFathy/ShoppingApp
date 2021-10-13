@@ -1,7 +1,9 @@
 package com.shopping.shoppingapp.DisplayShops
 
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,6 +42,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoilApi
 @Composable
 fun PrivateChats(navController: NavController, shopid: String, privatechatsviewModel:  PrivateChatViewModel = viewModel()){
@@ -50,18 +53,30 @@ fun PrivateChats(navController: NavController, shopid: String, privatechatsviewM
     var shopLogo by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
     var messagesList = remember { mutableStateListOf<Chat>() }
+    var shopmessagesList = remember { mutableStateListOf<Chat>() }
     val listState = rememberLazyListState()
     LaunchedEffect(key1 =Unit ) {
         messagesList.clear()
-        privatechatsviewModel.getUser()
+        privatechatsviewModel.getUser(shopid)
         privatechatsviewModel.getShop(shopid)
         shopName = privatechatsviewModel.shopName.value
         shopLogo = privatechatsviewModel.shopLogo.value
         messagesList.addAll(privatechatsviewModel.messagesList)
+        shopmessagesList.addAll(privatechatsviewModel.shopmessagesList)
+//        privatechatsviewModel.sortbytime(messagesList,shopmessagesList)
+        messagesList.addAll(shopmessagesList)
+        val pattern = "dd/M/yyyy hh:mm:ss"
+        val dateformat = SimpleDateFormat(pattern)
+        messagesList.sortByDescending { it.time }
+        messagesList.reverse()
         listState.animateScrollToItem(messagesList.size-1)
     }
     BackHandler() {
-        navController.popBackStack()
+        navController.navigate(Screen.DisplayShops.route){
+            popUpTo(Screen.DisplayShops.route){
+                inclusive = true
+            }
+        }
     }
 
 
@@ -121,7 +136,9 @@ fun PrivateChats(navController: NavController, shopid: String, privatechatsviewM
                                                 .clickable(onClick = {
                                                     var connectionsJSONString =
                                                         Gson().toJson(messagesList[index].images)
-                                                    privatechatsviewModel.imageList.addAll(messagesList[index].images)
+                                                    privatechatsviewModel.imageList.addAll(
+                                                        messagesList[index].images
+                                                    )
                                                     navController.navigate(
                                                         Screen.ProductPhotos.withArgs(index.toString())
                                                     )
@@ -187,6 +204,31 @@ fun PrivateChats(navController: NavController, shopid: String, privatechatsviewM
 
                                 color = Color.White
                             )
+                            if (messagesList[index].user_id.equals("")){
+                                Text(
+                                    text = "by $shopName",
+                                    textAlign = TextAlign.End,
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(end = 16.dp),
+                                    fontSize = 20.sp,
+
+                                    color = Color.White
+                                )
+
+                            }else{
+                                Text(
+                                    text = "by Me",
+                                    textAlign = TextAlign.Start,
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(end = 16.dp),
+                                    fontSize = 20.sp,
+
+                                    color = Color.White
+                                )
+
+                            }
 
                         }
                     }
