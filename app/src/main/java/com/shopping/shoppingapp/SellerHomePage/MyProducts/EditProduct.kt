@@ -138,6 +138,7 @@ fun EditProduct(navController: NavController,index:String,myProductsViewModel: M
                     for(tag in set){
                         arrayList.add(tag)
                     }
+
                     val pp=Product(name.text,price.text,description.text,productsList[idx].images,productsList[idx].shop_id,productsList[idx].product_id,arrayList,productsList[idx].time)
                     myProductsViewModel.editProduct(idx,pp)
                     navController.navigate(Screen.MyProducts.route){
