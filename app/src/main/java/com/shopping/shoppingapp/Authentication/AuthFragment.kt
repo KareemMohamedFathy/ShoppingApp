@@ -63,6 +63,7 @@ import com.shopping.shoppingapp.DB.Shop
 import com.shopping.shoppingapp.DB.User
 import com.shopping.shoppingapp.DisplayShops.DisplayShops
 import com.shopping.shoppingapp.DisplayShops.PrivateChats
+import com.shopping.shoppingapp.SellerHomePage.MyProducts.EditProduct
 import com.shopping.shoppingapp.SellerHomePage.MyProducts.MyProducts
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShopViewModel
@@ -180,6 +181,16 @@ override fun onCreateView(
 
                 AdminHomePage(navController)
             }
+            composable(
+                route = Screen.EditProduct.route+"/{index}",
+                arguments = listOf(
+                    navArgument("index"){
+                    }
+                )
+            ) {
+                entry->
+                EditProduct(navController,index = entry.arguments?.getString("index")!!)
+            }
         }
     }
 
@@ -289,6 +300,7 @@ override fun onCreateView(
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity(), OnCompleteListener { task ->
             if(task.isSuccessful) {
                 getDbData(navController)
+                Log.d("kusoo","hi")
             }else {
 
             }

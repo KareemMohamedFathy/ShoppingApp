@@ -1,12 +1,8 @@
 package com.shopping.shoppingapp.SellerHomePage.MyProducts
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -14,7 +10,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.shopping.shoppingapp.DB.Product
-import com.shopping.shoppingapp.DB.ShopChat
 import com.shopping.shoppingapp.SellerHomePage.MyShop.FValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,15 +23,25 @@ class MyProductsViewModel:ViewModel() {
     var shopLogo : MutableState<String> = mutableStateOf("")
     //var productsList : MutableLiveData<ArrayList<Product>> = MutableLiveData<ArrayList<Product>>()
         var productsList : MutableList<Product> = mutableStateListOf<Product>()
+    var tagsList : MutableList<String> = mutableStateListOf<String>()
 
     var products =   ArrayList<Product>()
+    init {
+
+    }
 
 
     suspend fun  getShop() {
        // productsList.clear()
         val dbReference = FirebaseDatabase.getInstance().getReference()
+
+
+        val query1=dbReference.child("User").orderByChild("type").equalTo("Seller")
+
+
         val auth = FirebaseAuth.getInstance()
         val query = dbReference.child("Shop").orderByChild("user_id").equalTo(auth.currentUser!!.uid)
+
         val snapshot = query.getSnapshotValue()
         if (snapshot.exists()) {
             for (sp in snapshot.children) {
@@ -137,4 +142,11 @@ class MyProductsViewModel:ViewModel() {
         }
 
     }
+    suspend fun editProduct(idx: Int, product: Product){
+        return withContext(Dispatchers.IO) {
+        val dbref=FirebaseDatabase.getInstance().getReference("Product").child(productsList[idx].product_id).setValue(product)
+
+        }
+
+        }
 }

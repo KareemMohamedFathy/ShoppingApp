@@ -42,7 +42,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalCoilApi
 @Composable
 fun PrivateChats(navController: NavController, shopid: String, privatechatsviewModel:  PrivateChatViewModel = viewModel()){

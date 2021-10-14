@@ -40,6 +40,7 @@ import coil.size.Scale
 import com.shopping.shoppingapp.DB.Product
 import com.shopping.shoppingapp.DB.ShopChat
 import com.shopping.shoppingapp.R
+import com.shopping.shoppingapp.Screen
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
@@ -215,6 +216,11 @@ fun MyProducts(navController: NavController,myProductsViewModel: MyProductsViewM
 
                                    }
                                        .size(40.dp)
+                                       .clickable(onClick = {
+                                           navController.navigate(Screen.EditProduct.withArgs(index.toString())){
+
+                                           }
+                                       })
                                    ,tint = Color.Black
                                )
                            }
