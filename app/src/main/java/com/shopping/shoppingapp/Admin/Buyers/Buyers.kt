@@ -1,4 +1,4 @@
-package com.shopping.shoppingapp.Admin.Buyerz
+package com.shopping.shoppingapp.Admin.Buyers
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -36,6 +36,7 @@ import com.shopping.shoppingapp.DB.User
         }
         buyernames=(buyersViewModel.usersName as SnapshotStateList<String>)
         buyerss=(buyersViewModel.users as SnapshotStateList<User>)
+
         LazyColumn(modifier=Modifier.border(BorderStroke(2.dp, Color.Blue))){
             itemsIndexed(buyerss){
                 index, item ->  Card(

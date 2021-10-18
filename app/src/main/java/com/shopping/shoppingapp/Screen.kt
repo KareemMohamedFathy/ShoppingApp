@@ -12,7 +12,9 @@ sealed class Screen(val route:String) {
     object MyShop : Screen("myShop")
     object ProductPhotos : Screen("productPhotos")
     object DisplayShops:Screen("displayShops")
-
+    object Admin:Screen("admin")
+    object DisplayShopsAdmin:Screen("shops_admin")
+    object Buyers:Screen("buyers_display")
     fun withArgs(vararg args: String): String {
         return buildString {
 

@@ -55,7 +55,7 @@ import com.shopping.shoppingapp.DB.Shop
                 .padding(
                     bottom = 2.dp,
                     top = 2.dp
-                ),
+                )
             ) {
                 shopview(shop = shops[index])
             }

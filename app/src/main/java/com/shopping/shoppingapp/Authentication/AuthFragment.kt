@@ -56,6 +56,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.shopping.shoppingapp.Admin.Admin
 import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
 import com.shopping.shoppingapp.DB.Shop
@@ -152,6 +153,21 @@ override fun onCreateView(
 
                 DisplayShops(navController=navController)
             }
+            composable(
+                route = Screen.Admin.route
+            ) {
+
+                Admin(navController=navController)
+            }
+            composable(
+                route = Screen.Buyers.route
+            ) {
+
+                Admin(navController=navController)
+                Log.d("tag", "auth fragment first of all")
+
+            }
+
         }
     }
 
@@ -242,7 +258,12 @@ override fun onCreateView(
             userType=type
             updateUser= User(name,email,type,auth.currentUser!!.uid,shop_id)
             Log.d("kuso","haha $shop_id $name")
-            if(userType=="Seller"&&TextUtils.isEmpty(shop_id)) {
+            if (userType=="Admin"){
+                navController.navigate(Screen.Admin.route)
+                Log.d("Zozza","You logged in as an admin $userType $name")
+
+            }
+            else if(userType=="Seller"&&TextUtils.isEmpty(shop_id)) {
                 navController.navigate(Screen.CreateShop.route)
             }
             else if(userType=="Buyer"){

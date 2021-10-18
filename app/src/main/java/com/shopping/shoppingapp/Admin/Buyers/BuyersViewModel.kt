@@ -1,4 +1,4 @@
-package com.shopping.shoppingapp.Admin.Buyerz
+package com.shopping.shoppingapp.Admin.Buyers
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
@@ -22,7 +22,7 @@ class BuyersViewModel : ViewModel() {
         users.clear()
         Log.d("tag", "Wenabyyyyyyyyy")
 
-        val dbref = FirebaseDatabase.getInstance().getReference().child("User").orderByChild(usersType.toString()).equalTo("Buyer")
+        val dbref = FirebaseDatabase.getInstance().getReference().child("User").orderByChild("type").equalTo("Buyer")
         Log.d("tag", "Buyers view model")
 
         dbref.addValueEventListener(object : ValueEventListener{
