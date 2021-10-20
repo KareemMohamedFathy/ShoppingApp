@@ -56,6 +56,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.shopping.shoppingapp.Admin.Buyers.DisplayBuyers
 import com.shopping.shoppingapp.AdminHomePage.AdminHomePage
 import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
@@ -182,6 +183,12 @@ override fun onCreateView(
                 AdminHomePage(navController)
             }
             composable(
+                route = Screen.Buyers.route
+            ) {
+
+                DisplayBuyers(navController)
+            }
+            composable(
                 route = Screen.EditProduct.route+"/{index}",
                 arguments = listOf(
                     navArgument("index"){
@@ -277,6 +284,7 @@ override fun onCreateView(
             val type:String=it.child("type").value.toString()
             val name:String=it.child("name").value.toString()
             val email:String=it.child("email").value.toString()
+            Log.d("kuso",type)
 
             userType=type
             updateUser= User(name,email,type,auth.currentUser!!.uid,shop_id)
@@ -292,6 +300,7 @@ override fun onCreateView(
             }
             else{
                 navController.navigate(Screen.AdminHomePage.route)
+                Log.d("kuso",userType)
             }
         }
         }
