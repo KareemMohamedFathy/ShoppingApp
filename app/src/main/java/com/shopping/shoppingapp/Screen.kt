@@ -18,6 +18,7 @@ sealed class Screen(val route:String) {
     object AdminHomePage:Screen("adminHomePage")
     object EditTags:Screen("editTags")
 
+
     fun withArgs(vararg args: String): String {
         return buildString {
 
