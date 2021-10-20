@@ -27,6 +27,8 @@ fun SellerHomePage(navController: NavController){
         CreateButton(name = ButtonsName.MYSHOP,navController)
         CreateButton(name = ButtonsName.MESSAGES,navController)
         CreateButton(name = ButtonsName.ALLSHOPS,navController)
+        CreateButton(name = ButtonsName.MYPRODUCTS,navController)
+
     }
 } 
 @Composable
@@ -43,6 +45,9 @@ fun CreateButton(name: String, navController: NavController){
         }
         if(ButtonsName.ALLSHOPS==name){
             navController.navigate(Screen.DisplayShops.route)
+        }
+        if(ButtonsName.MYPRODUCTS==name){
+            navController.navigate(Screen.MyProducts.route)
         }
     },
         modifier = Modifier

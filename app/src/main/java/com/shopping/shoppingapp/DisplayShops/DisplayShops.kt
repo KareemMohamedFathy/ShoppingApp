@@ -1,5 +1,6 @@
 package com.shopping.shoppingapp.DisplayShops
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -21,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.shopping.shoppingapp.DB.Shop
+import com.shopping.shoppingapp.Screen
 
 
 @Composable
@@ -57,7 +59,7 @@ import com.shopping.shoppingapp.DB.Shop
                     top = 2.dp
                 )
             ) {
-                shopview(shop = shops[index])
+                shopview(navController, shop = shops[index])
             }
 
 
@@ -82,8 +84,9 @@ import com.shopping.shoppingapp.DB.Shop
 
 }
 @Composable
-fun shopview(shop: Shop){
-    Row(modifier = Modifier.padding(all = 8.dp)) {
+fun shopview(navController: NavController , shop: Shop){
+    var isClicked by remember { mutableStateOf(false) }
+    Row(modifier = Modifier.padding(all = 8.dp) .clickable { isClicked = true }) {
         Image(
             painter = rememberImagePainter(shop.logo),
             contentDescription = null,
@@ -94,16 +97,26 @@ fun shopview(shop: Shop){
             ,contentScale = ContentScale.FillBounds
         )
         Spacer(modifier = Modifier.width(8.dp))
-        var isClicked by remember { mutableStateOf(false) }
-        Column(modifier = Modifier.clickable { isClicked= !isClicked }) {
+        Column() {
             Text(
                 text = shop.name,
                 color = MaterialTheme.colors.primaryVariant,
                 style = MaterialTheme.typography.h6
             )
 //                Spacer(modifier = Modifier.width(8.dp))
+//            Log.d("tag",shop.toString())
 
+        }
+        if (isClicked){
+            navController.navigate(Screen.PrivateChats.withArgs(shop.shop_id.toString())) {
+                popUpTo(Screen.DisplayShops.route) {
+                    inclusive = true
+                }
+            }
+            isClicked=false
         }
 
     }
+
+
 }

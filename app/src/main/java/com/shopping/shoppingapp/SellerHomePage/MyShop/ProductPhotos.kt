@@ -48,7 +48,6 @@ fun ProductPhotos(navController: NavController,myShopViewModel: MyShopViewModel=
     imagesList.clear()
     if(myShopViewModel.messagesList.getOrNull(index.toInt())!=null)
     imagesList.addAll(myShopViewModel.messagesList[index.toInt()].images)
-    Log.d("kuso6", myShopViewModel.imageList.toString())
 
    LazyColumn(
        Modifier

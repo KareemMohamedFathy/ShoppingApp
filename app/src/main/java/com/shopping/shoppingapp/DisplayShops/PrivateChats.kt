@@ -1,7 +1,9 @@
-package com.shopping.shoppingapp.SellerHomePage.MyShop
+package com.shopping.shoppingapp.DisplayShops
 
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +17,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,8 +25,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,44 +32,51 @@ import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.gson.Gson
+import com.shopping.shoppingapp.DB.Chat
 import com.shopping.shoppingapp.DB.ShopChat
-import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
+import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShopViewModel
+import com.shopping.shoppingapp.SellerHomePage.MyShop.color
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
 
 
-val String.color
-    get() = Color(android.graphics.Color.parseColor(this))
 @ExperimentalCoilApi
 @Composable
-fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewModel()) {
+fun PrivateChats(navController: NavController, shopid: String, privatechatsviewModel:  PrivateChatViewModel = viewModel()){
+//    privatechatsviewModel.shopId.value = shopid
     val scope = rememberCoroutineScope()
     val context= LocalContext
     var shopName by remember { mutableStateOf("") }
     var shopLogo by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
-    var messagesList = remember { mutableStateListOf<ShopChat>() }
+    var messagesList = remember { mutableStateListOf<Chat>() }
+    var shopmessagesList = remember { mutableStateListOf<Chat>() }
     val listState = rememberLazyListState()
     LaunchedEffect(key1 =Unit ) {
-            Log.d("kusoo","hi")
-            messagesList.clear()
-            myShopViewModel.getShop()
-        shopName = myShopViewModel.shopName.value
-        shopLogo = myShopViewModel.shopLogo.value
-        Log.d("kusoo","hi")
-        messagesList.addAll(myShopViewModel.messagesList)
+        messagesList.clear()
+        privatechatsviewModel.getUser(shopid)
+        privatechatsviewModel.getShop(shopid)
+        shopName = privatechatsviewModel.shopName.value
+        shopLogo = privatechatsviewModel.shopLogo.value
+        messagesList.addAll(privatechatsviewModel.messagesList)
+        shopmessagesList.addAll(privatechatsviewModel.shopmessagesList)
+//        privatechatsviewModel.sortbytime(messagesList,shopmessagesList)
+        messagesList.addAll(shopmessagesList)
+        val pattern = "dd/M/yyyy hh:mm:ss"
+        val dateformat = SimpleDateFormat(pattern)
+        messagesList.sortByDescending { it.time }
+        messagesList.reverse()
         listState.animateScrollToItem(messagesList.size-1)
     }
     BackHandler() {
-        navController.popBackStack()
+        navController.navigate(Screen.DisplayShops.route){
+            popUpTo(Screen.DisplayShops.route){
+                inclusive = true
+            }
+        }
     }
-
-
-    Log.d("kuso", messagesList.size.toString())
-
 
 
     Scaffold(
@@ -80,7 +88,7 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
                     .padding(start = 48.dp, top = 24.dp, bottom = 70.dp, end = 16.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-                  ,state = listState
+                ,state = listState
             ) {
 
                 itemsIndexed(messagesList) { index, item ->
@@ -127,7 +135,9 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
                                                 .clickable(onClick = {
                                                     var connectionsJSONString =
                                                         Gson().toJson(messagesList[index].images)
-                                                    myShopViewModel.imageList.addAll(messagesList[index].images)
+                                                    privatechatsviewModel.imageList.addAll(
+                                                        messagesList[index].images
+                                                    )
                                                     navController.navigate(
                                                         Screen.ProductPhotos.withArgs(index.toString())
                                                     )
@@ -161,99 +171,124 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
 
                                 }
                             }
-                        var dateText = ""
-                    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-                    val date1: Date? = sdf.parse(messagesList[index].time)
-                    val date2: Date? = sdf.parse(sdf.format(Date()))
-                    val diff: Long = date2!!.getTime() - date1!!.getTime()
+                            var dateText = ""
+                            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                            val date1: Date? = sdf.parse(messagesList[index].time)
+                            val date2: Date? = sdf.parse(sdf.format(Date()))
+                            val diff: Long = date2!!.getTime() - date1!!.getTime()
 
 
-                    val seconds = diff / 1000
-                    val minutes = seconds / 60
-                    val hours = minutes / 60
-                    val days = hours / 24
-                    if (days >= 1) {
-                        dateText = ("$days d . ")
-                    } else if (hours >= 1) {
-                        dateText = ("$hours h . ")
-                    } else if (minutes < 60) {
-                        dateText = ("$minutes m . ")
-                    } else if (seconds >= 0) {
-                        dateText = ("$seconds s . ")
-                    }
+                            val seconds = diff / 1000
+                            val minutes = seconds / 60
+                            val hours = minutes / 60
+                            val days = hours / 24
+                            if (days >= 1) {
+                                dateText = ("$days d . ")
+                            } else if (hours >= 1) {
+                                dateText = ("$hours h . ")
+                            } else if (minutes < 60) {
+                                dateText = ("$minutes m . ")
+                            } else if (seconds >= 0) {
+                                dateText = ("$seconds s . ")
+                            }
 
 
-    Text(
-        text = dateText,
-        textAlign = TextAlign.End,
-        modifier = Modifier
-            .align(Alignment.End)
-            .padding(end = 16.dp),
-        fontSize = 20.sp,
+                            Text(
+                                text = dateText,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .padding(end = 16.dp),
+                                fontSize = 20.sp,
 
-        color = Color.White
-    )
+                                color = Color.White
+                            )
+                            if (messagesList[index].user_id.equals("")){
+                                Text(
+                                    text = "by $shopName",
+                                    textAlign = TextAlign.End,
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(end = 16.dp),
+                                    fontSize = 20.sp,
 
-}
+                                    color = Color.White
+                                )
+
+                            }else{
+                                Text(
+                                    text = "by Me",
+                                    textAlign = TextAlign.Start,
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(end = 16.dp),
+                                    fontSize = 20.sp,
+
+                                    color = Color.White
+                                )
+
+                            }
+
                         }
-
                     }
+
                 }
+            }
 
         }
-       ,
+        ,
         bottomBar = {
 
             Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp)
-                .background(Color.White)
-            ,
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+                    .background(Color.White)
+                ,
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
             ){
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-
-
-    OutlinedTextField(
-        value = message,
-        onValueChange = { message = it },
-        label = {
-            Text("Message")
-        },
-        shape = RoundedCornerShape(36.dp),
-
-        modifier = Modifier
-            .background(Color.White)
-            .weight(0.5f)
-
-    )
-    Spacer(modifier = Modifier.width(16.dp))
-            Image(
-                painter = painterResource(id = R.drawable.ic_send), contentDescription = "",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable(onClick = {
-                        scope.launch {
-                            //  messagesList.clear()
-                            myShopViewModel.addChat(message)
-                            messagesList.add(myShopViewModel.messagesList[messagesList.size])
-
-                            listState.animateScrollToItem(messagesList.size - 1)
-                            Log.d("kusoo", "hi2")
-
-                            message = ""
-                        }
-                    }),
-                contentScale = ContentScale.FillBounds,
-            )
                 Spacer(modifier = Modifier.width(16.dp))
-        }
 
-                    }
+
+
+                OutlinedTextField(
+                    value = message,
+                    onValueChange = { message = it },
+                    label = {
+                        Text("Message")
+                    },
+                    shape = RoundedCornerShape(36.dp),
+
+                    modifier = Modifier
+                        .background(Color.White)
+                        .weight(0.5f)
+
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painter = painterResource(id = com.shopping.shoppingapp.R.drawable.ic_send), contentDescription = "",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clickable(onClick = {
+                            scope.launch {
+                                //  messagesList.clear()
+                                privatechatsviewModel.addChat(message)
+                                messagesList.add(privatechatsviewModel.messagesList[messagesList.size])
+
+                                listState.animateScrollToItem(messagesList.size - 1)
+                                Log.d("kusoo", "hi2")
+
+                                message = ""
+                            }
+                        }),
+                    contentScale = ContentScale.FillBounds,
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+
+        }
         ,
         topBar = {
             Row(
@@ -269,49 +304,14 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
                 Image(
                     painter = rememberImagePainter(shopLogo), contentDescription = "",
                     contentScale = ContentScale.FillBounds,
-                    modifier =Modifier.size(40.dp)
+                    modifier = Modifier.size(40.dp)
 
-                    )
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
-                 Text(shopName, fontSize = 20.sp,color = Color.White)
+                Text(shopName, fontSize = 20.sp,color = Color.White)
 
             }
         }
     )
-}
-
-fun spacedByWithFooter(space: Dp) = object : Arrangement.Vertical {
-
-    override val spacing = space
-
-    override fun Density.arrange(
-        totalSize: Int,
-        sizes: IntArray,
-        outPositions: IntArray,
-    ) {
-        if (sizes.isEmpty()) return
-        val spacePx = space.roundToPx()
-
-        var occupied = 0
-        var lastSpace = 0
-
-        sizes.forEachIndexed { index, size ->
-
-            if (index == sizes.lastIndex) {
-                outPositions[index] = totalSize - size
-            } else {
-                outPositions[index] = min(occupied, totalSize - size)
-            }
-            lastSpace = min(spacePx, totalSize - outPositions[index] - size)
-            occupied = outPositions[index] + size + lastSpace
-        }
-        occupied -= lastSpace
-    }
-}
-
-fun getCurrentDate():String{
-    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-    val currentDate = sdf.format(Date())
-    return currentDate
 }
