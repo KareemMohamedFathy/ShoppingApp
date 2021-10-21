@@ -49,23 +49,11 @@ fun EditProduct(navController: NavController,index:String,myProductsViewModel: M
     LaunchedEffect(key1 = Unit){
         myProductsViewModel.getShop()
         productsList.addAll(myProductsViewModel.productsList)
-        tagsList.add("Clothes")
-        tagsList.add("Accessories")
-        tagsList.add("OnSale")
-        tagsList.add("fashion")
-        tagsList.add("instagood")
-        tagsList.add("plants")
-        tagsList.add("for home")
-        tagsList.add("for office")
-        tagsList.add("limited time only")
-        tagsList.add("Comfortable")
-        tagsList.add("Unique")
-        tagsList.add("Save")
-        tagsList.add("Games")
         set.addAll(productsList[idx].tags!!)
         Log.d("kuso", set.toString()+"hi")
 
     }
+    tagsList=myProductsViewModel.tagsList
 
     Column(
         Modifier

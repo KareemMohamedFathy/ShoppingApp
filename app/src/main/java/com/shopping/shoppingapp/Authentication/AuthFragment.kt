@@ -45,7 +45,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
@@ -57,6 +56,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.shopping.shoppingapp.Admin.Buyers.DisplayBuyers
+import com.shopping.shoppingapp.AdminHomePage.AddTags.AddTag
 import com.shopping.shoppingapp.AdminHomePage.AdminHomePage
 import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
@@ -187,6 +187,11 @@ override fun onCreateView(
             ) {
 
                 DisplayBuyers(navController)
+            }
+            composable(
+                route = Screen.AddTags.route
+            ) {
+                AddTag(navController)
             }
             composable(
                 route = Screen.EditProduct.route+"/{index}",

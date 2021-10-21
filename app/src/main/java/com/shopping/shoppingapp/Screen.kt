@@ -16,7 +16,6 @@ sealed class Screen(val route:String) {
     object DisplayShops:Screen("displayShops")
     object PrivateChats:Screen("privatechats")
     object AdminHomePage:Screen("adminHomePage")
-    object EditTags:Screen("editTags")
     object Buyers:Screen("Buyer")
 
 

@@ -22,13 +22,11 @@ fun AdminHomePage(navController: NavController) {
         ,horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        CreateButton(name = "ButtonsAdmin.SHOPS",navController)
-        CreateButton(name = "ButtonsAdmin.BUYERS",navController)
-        CreateButton(name = "ButtonsAdmin.TAGS",navController)
-        CreateButton(name = "ButtonsAdmin.RECENTLYADDED",navController)
+        CreateButton(name = ButtonsAdmin.SHOPS,navController)
+        CreateButton(name = ButtonsAdmin.BUYERS,navController)
+        CreateButton(name = ButtonsAdmin.TAGS,navController)
+        CreateButton(name = ButtonsAdmin.RECENTLYADDED,navController)
     }
-
-
 }
 
 @Composable
@@ -40,10 +38,13 @@ fun CreateButton(name: String, navController: NavController){
 //        if(ButtonsAdmin.SHOPS==name){
 //            navController.navigate(Screen.DisplayShopsAdmin.route)
 //        }
-        if ("ButtonsAdmin.BUYERS" == name) {
+        if (ButtonsAdmin.BUYERS == name) {
             navController.navigate(Screen.Buyers.route)
             //   Log.d("AdmindisplayScreen", Screen.Buyers.route)}
-
+        }
+        if (ButtonsAdmin.TAGS == name) {
+            navController.navigate(Screen.AddTags.route)
+            //   Log.d("AdmindisplayScreen", Screen.Buyers.route)}
         }
     }
         ,modifier = Modifier

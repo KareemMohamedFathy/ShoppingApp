@@ -41,13 +41,17 @@ import coil.compose.rememberImagePainter
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
 import com.shopping.shoppingapp.DB.Product
 import com.shopping.shoppingapp.DB.ShopChat
+import com.shopping.shoppingapp.DB.Tag
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
 import com.shopping.shoppingapp.SellerHomePage.SellerHomePage
 import com.shopping.shoppingapp.ui.theme.MyApplicationTheme
@@ -78,7 +82,7 @@ class AddProductActivity : AppCompatActivity() {
     @ExperimentalCoilApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       tagsList.add("Clothes")
+       /*tagsList.add("Clothes")
         tagsList.add("Accessories")
         tagsList.add("OnSale")
         tagsList.add("fashion")
@@ -91,6 +95,13 @@ class AddProductActivity : AppCompatActivity() {
         tagsList.add("Unique")
         tagsList.add("Save")
         tagsList.add("Games")
+       */
+      /*  for(tags in tagsList){
+            val dbReference=FirebaseDatabase.getInstance().getReference("Tag")
+            val tagId = dbReference.push().key.toString()
+            val tag= Tag(tagId,tags)
+            dbReference.child(tagId).setValue(tag)
+        }*/
         setContent {
             MyApplicationTheme() {
                 val navController = rememberNavController()
@@ -334,6 +345,10 @@ class AddProductActivity : AppCompatActivity() {
     @ExperimentalCoilApi
     @Composable
     fun AddProduct(navController: NavController) {
+       LaunchedEffect(key1 = Unit){
+           getTags()
+       }
+
         Column(
             Modifier
                 .fillMaxSize()
@@ -465,5 +480,22 @@ class AddProductActivity : AppCompatActivity() {
 
 
         }
+    }
+
+    private fun getTags() {
+        tagsList.clear()
+        val dbref = FirebaseDatabase.getInstance().getReference("Tag").addValueEventListener( object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (sp in snapshot.children) {
+                    val tagName = sp.child("tagName").value.toString()
+                    tagsList.add(tagName)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }
