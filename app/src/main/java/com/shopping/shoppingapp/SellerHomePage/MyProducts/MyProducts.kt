@@ -218,7 +218,7 @@ fun MyProducts(navController: NavController,myProductsViewModel: MyProductsViewM
                                        .size(40.dp)
                                        .clickable(onClick = {
                                            navController.navigate(Screen.EditProduct.withArgs(index.toString())){
-
+                                               navController.popBackStack()
                                            }
                                        })
                                    ,tint = Color.Black

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -355,13 +356,17 @@ class AddProductActivity : AppCompatActivity() {
                 .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+            var enabled1  by remember { mutableStateOf(true) }
             var name by remember { mutableStateOf(TextFieldValue("")) }
             var price by remember { mutableStateOf(TextFieldValue("")) }
             var description by remember { mutableStateOf(TextFieldValue("")) }
             val pickedImages:MutableList<String?> by remember { mutableStateOf(mutableListOf()) }
             var compose:Int by remember { mutableStateOf(0) }
             var pickedImage: MutableState<String?> =remember { mutableStateOf(pickedImages.getOrNull(0))}
-            Spacer(modifier = Modifier.height(16.dp))
+            val context= LocalContext.current
+            enabled1 = (!TextUtils.isEmpty(name.text)&&!TextUtils.isEmpty(price.text)&&!TextUtils.isEmpty(description.text)&&imagesList.size>0)
+                Spacer(modifier = Modifier.height(16.dp))
+
             productName=name.text
             productDesciption=description.text
             productPrice=price.text
@@ -401,8 +406,14 @@ class AddProductActivity : AppCompatActivity() {
                                val value = GlobalScope.async { // creates worker thread
                                    val res = withContext(Dispatchers.Default) {
                                        onGalleryClick()
-                                       while (imagesList.size < imagesCount) {
+
+                                           while (imagesList.size < imagesCount) {
                                            delay(1000)
+                                               enabled1 = false
+
+                                           }
+                                       if (imagesList.size==imagesCount) {
+                                           enabled1 = true
                                        }
                                        pickedImage.value = imagesList[0]
                                        pickedImages.addAll(imagesList)
@@ -468,8 +479,15 @@ class AddProductActivity : AppCompatActivity() {
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {navController.navigate(Screen.AddTags.route)}
-            ,modifier = Modifier.padding(16.dp)
+            Button(onClick = {
+                if(!TextUtils.isEmpty(name.text)&&!TextUtils.isEmpty(price.text)&&!TextUtils.isEmpty(description.text)&&imagesList.size>0) {
+                    navController.navigate(Screen.AddTags.route)
+                }
+                else{
+                    Toast.makeText(context,"Data is missing",Toast.LENGTH_SHORT).show()
+                }
+                                                   }
+            ,modifier = Modifier.padding(16.dp),enabled = enabled1
             ) {
                 Text(
                     text = "Next",

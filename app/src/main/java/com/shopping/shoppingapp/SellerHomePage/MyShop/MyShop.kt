@@ -162,13 +162,19 @@ fun MyShop(navController: NavController, myShopViewModel:MyShopViewModel= viewMo
                                 }
                             }
                         var dateText = ""
-                    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                    val sdf = SimpleDateFormat("dd/M/yyyy HH:mm:ss")
                     val date1: Date? = sdf.parse(messagesList[index].time)
-                    val date2: Date? = sdf.parse(sdf.format(Date()))
+                            val sdf1 = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+
+                            val date2: Date? = sdf1.parse(sdf1.format(Date()))
                     val diff: Long = date2!!.getTime() - date1!!.getTime()
+                            Log.d("kuso2",date1.toString())
+                            Log.d("kuso3",date2.toString())
+                            Log.d("kuso4",diff.toString())
 
 
-                    val seconds = diff / 1000
+
+                            val seconds = diff / 1000
                     val minutes = seconds / 60
                     val hours = minutes / 60
                     val days = hours / 24

@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.shopping.shoppingapp.DB.Product
+import com.shopping.shoppingapp.DB.ShopChat
 import com.shopping.shoppingapp.SellerHomePage.MyShop.FValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.StringBuilder
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -156,8 +158,41 @@ class MyProductsViewModel:ViewModel() {
     suspend fun editProduct(idx: Int, product: Product){
         return withContext(Dispatchers.IO) {
         val dbref=FirebaseDatabase.getInstance().getReference("Product").child(productsList[idx].product_id).setValue(product)
+            val dbReference = FirebaseDatabase.getInstance().getReference()
+            val query = dbReference.child("ShopChat").orderByChild("time").equalTo(product.time)
+            val snapshot = query.getSnapshotValue()
+            if (snapshot.exists()) {
+                for (sp in snapshot.children) {
+
+                    val chat_id = sp.child("chat_id").value.toString()
+                    val shop_id = sp.child("shop_id").value.toString()
+
+                    val message: StringBuilder = StringBuilder()
+                    message.append("Name: ${product.name}  \n")
+                    message.append("Price: ${product.price}  \n")
+                    message.append("Description: ${product.description} ")
+                    val images = product.images
+                    val tags = product.tags
+                    val shopChat = ShopChat(
+                        message.toString(),
+                        chat_id,
+                        product.time,
+                        images!!,
+                        tags!!,
+                        shop_id
+                    )
+
+                    val dbref1 =
+                        FirebaseDatabase.getInstance().getReference("ShopChat").child(chat_id)
+                            .setValue(shopChat)
+
+
+                }
+            }
+
 
         }
+
 
         }
 }
