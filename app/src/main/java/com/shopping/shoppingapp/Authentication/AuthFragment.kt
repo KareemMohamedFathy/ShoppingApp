@@ -64,6 +64,7 @@ import com.shopping.shoppingapp.DB.Shop
 import com.shopping.shoppingapp.DB.User
 import com.shopping.shoppingapp.DisplayShops.DisplayShops
 import com.shopping.shoppingapp.DisplayShops.PrivateChats
+import com.shopping.shoppingapp.DisplayShops.ViewPhotos
 import com.shopping.shoppingapp.SellerHomePage.MyProducts.EditProduct
 import com.shopping.shoppingapp.SellerHomePage.MyProducts.MyProducts
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
@@ -202,6 +203,17 @@ override fun onCreateView(
             ) {
                 entry->
                 EditProduct(navController,index = entry.arguments?.getString("index")!!)
+            }
+            composable(
+                route = Screen.ViewPhotos.route+"/{index}/{shopid}",
+                arguments = listOf(
+                    navArgument("index"){
+                    }
+                )
+            ) {
+                    entry->
+                ViewPhotos(navController = navController,index = entry.arguments?.getString("index")!!,shopid = entry.arguments?.getString("shopid")!!)
+
             }
         }
     }

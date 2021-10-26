@@ -197,6 +197,12 @@ class PrivateChatViewModel: ViewModel() {
         }
 
     }
+    suspend  fun getBoth(){
+
+        messagesList2.addAll(messagesList)
+        messagesList2.addAll(shopmessagesList)
+        messagesList2.sortBy { it.time }
+    }
 
 //    suspend fun sortbytime(msglist : MutableList<Chat>, msgList2 : MutableList<Chat>){
 //

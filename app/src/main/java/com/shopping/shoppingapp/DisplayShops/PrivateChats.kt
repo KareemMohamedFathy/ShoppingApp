@@ -66,8 +66,8 @@ fun PrivateChats(navController: NavController, shopid: String, privatechatsviewM
         messagesList.addAll(shopmessagesList)
         val pattern = "dd/M/yyyy hh:mm:ss"
         val dateformat = SimpleDateFormat(pattern)
-        messagesList.sortByDescending { it.time }
-        messagesList.reverse()
+        messagesList.sortBy { it.time }
+        //messagesList.reverse()
         listState.animateScrollToItem(messagesList.size-1)
     }
     BackHandler() {
@@ -139,7 +139,7 @@ fun PrivateChats(navController: NavController, shopid: String, privatechatsviewM
                                                         messagesList[index].images
                                                     )
                                                     navController.navigate(
-                                                        Screen.ProductPhotos.withArgs(index.toString())
+                                                        Screen.ViewPhotos.withArgs(index.toString(),shopid)
                                                     )
                                                 }),
                                             contentScale = ContentScale.FillBounds
