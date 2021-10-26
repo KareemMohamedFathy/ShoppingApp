@@ -275,7 +275,7 @@ fun PrivateChats(navController: NavController, shopid: String, privatechatsviewM
                             scope.launch {
                                 //  messagesList.clear()
                                 privatechatsviewModel.addChat(message)
-                                messagesList.add(privatechatsviewModel.messagesList[messagesList.size])
+                                messagesList.add(privatechatsviewModel.messagesList[privatechatsviewModel.messagesList.size-1])
 
                                 listState.animateScrollToItem(messagesList.size - 1)
                                 Log.d("kusoo", "hi2")
