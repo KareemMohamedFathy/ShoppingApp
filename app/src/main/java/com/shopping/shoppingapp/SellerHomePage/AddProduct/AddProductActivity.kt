@@ -23,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -147,7 +148,16 @@ class AddProductActivity : AppCompatActivity() {
             for(tagslist in tagsList)
                    MultipleCheckBox(tagslist)
 
-        Button(onClick = {addProductToDb(navController)},
+        Button(
+
+            onClick = {
+                if(set.size!=0) {
+                    addProductToDb(navController)
+                }
+                else{
+                    Toast.makeText(this@AddProductActivity,"You must add at least 1 tag",Toast.LENGTH_SHORT).show()
+                }
+                      },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -173,7 +183,9 @@ class AddProductActivity : AppCompatActivity() {
             for (item in set) {
                 listOfTags.add(item)
             }
-            val date=getCurrentDate()
+            val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
+            val currentDate = sdf.format(Date())
+            val date:String=currentDate
             val product = Product(
                 productName,
                 productPrice,
@@ -364,7 +376,7 @@ class AddProductActivity : AppCompatActivity() {
             var compose:Int by remember { mutableStateOf(0) }
             var pickedImage: MutableState<String?> =remember { mutableStateOf(pickedImages.getOrNull(0))}
             val context= LocalContext.current
-            enabled1 = (!TextUtils.isEmpty(name.text)&&!TextUtils.isEmpty(price.text)&&!TextUtils.isEmpty(description.text)&&imagesList.size>0)
+            enabled1 = (!TextUtils.isEmpty(name.text)&&!TextUtils.isEmpty(description.text)&&imagesList.size>0)
                 Spacer(modifier = Modifier.height(16.dp))
 
             productName=name.text
@@ -407,12 +419,12 @@ class AddProductActivity : AppCompatActivity() {
                                    val res = withContext(Dispatchers.Default) {
                                        onGalleryClick()
 
-                                           while (imagesList.size < imagesCount) {
+                                       while (imagesList.size < imagesCount) {
                                            delay(1000)
-                                               enabled1 = false
+                                           enabled1 = false
 
-                                           }
-                                       if (imagesList.size==imagesCount) {
+                                       }
+                                       if (imagesList.size == imagesCount) {
                                            enabled1 = true
                                        }
                                        pickedImage.value = imagesList[0]
@@ -478,6 +490,7 @@ class AddProductActivity : AppCompatActivity() {
                     Text("Enter price")
                 }
             )
+            Text("Price is optional but it attracts buyers",color = Color.Red,fontSize = 13.sp)
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
                 if(!TextUtils.isEmpty(name.text)&&!TextUtils.isEmpty(price.text)&&!TextUtils.isEmpty(description.text)&&imagesList.size>0) {

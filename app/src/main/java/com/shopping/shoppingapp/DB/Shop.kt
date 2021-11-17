@@ -5,4 +5,5 @@ data class Shop(
     var logo:String="",
     var shop_id:String="",
     var user_id:String="",
+    val shopStatus:String="OnHold"
 )

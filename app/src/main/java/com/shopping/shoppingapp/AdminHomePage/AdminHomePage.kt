@@ -35,9 +35,9 @@ fun CreateButton(name: String, navController: NavController){
     val context = LocalContext.current
     Button(onClick = {
 
-//        if(ButtonsAdmin.SHOPS==name){
-//            navController.navigate(Screen.DisplayShopsAdmin.route)
-//        }
+      if(ButtonsAdmin.SHOPS==name){
+         navController.navigate(Screen.Shops.route)
+      }
         if (ButtonsAdmin.BUYERS == name) {
             navController.navigate(Screen.Buyers.route)
             //   Log.d("AdmindisplayScreen", Screen.Buyers.route)}

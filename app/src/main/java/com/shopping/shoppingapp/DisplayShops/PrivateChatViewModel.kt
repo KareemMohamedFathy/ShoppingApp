@@ -24,6 +24,8 @@ class PrivateChatViewModel: ViewModel() {
     var shopName : MutableState<String> = mutableStateOf("")
     var shopId : MutableState<String> = mutableStateOf("")
     var userId : MutableState<String> = mutableStateOf("")
+    var userName : MutableState<String> = mutableStateOf("")
+
     var shopLogo : MutableState<String> = mutableStateOf("")
 //    var productsList : MutableList<Product> = mutableStateListOf<Product>()
     var messagesList : MutableList<Chat> = mutableStateListOf<Chat>()
@@ -47,6 +49,7 @@ class PrivateChatViewModel: ViewModel() {
             for (sp in snapshot.children) {
                 val arr: ArrayList<Any?> = arrayListOf(sp.value)
                 userId.value = sp.child("user_id").value.toString()
+                userName.value=sp.child("name").value.toString()
             }
         }
         getmessages(shopid)
@@ -111,14 +114,14 @@ class PrivateChatViewModel: ViewModel() {
     }
 
 
-    suspend  fun addChat(message:String){
+    suspend  fun addChat(message:String, clickedMessage:Int=-1,photos:ArrayList<String> = ArrayList()){
         return withContext(Dispatchers.IO) {
 
             //messagesList.clear()
             val firebaseDatabase = FirebaseDatabase.getInstance()
             var dbReference = firebaseDatabase.getReference("Chat")
             val chat_id = dbReference.push().key.toString()
-            val chat: Chat = Chat(message.toString(), chat_id, getCurrentDate(),shop_id = shopId.value, user_id = userId.value)
+            val chat: Chat = Chat(message.toString(), chat_id, getCurrentDate(),shop_id = shopId.value, user_id = userId.value,messagReply = clickedMessage,images = photos,sender = userName.value)
             dbReference.child(chat_id).setValue(chat)
             messagesList.add(chat)
 
@@ -140,17 +143,18 @@ class PrivateChatViewModel: ViewModel() {
                 val shopchatid = sp.child("chat_id").value.toString()
                 var shopimageList = sp.child("images").value
                 val  tags= sp.child("tags").value
+                Log.d("kuso5",shopmessage)
                 if(shopimageList!=null) {
                     val chat: Chat = Chat(
                         shopmessage.toString(), shopchatid, messagetime, shopimageList as ArrayList<String>,
                         tags as ArrayList<String>,
-                        shopid, ""
+                        shopid, "",sender = shopName.value
                     )
                     shopmessagesList.add(chat)
                 }
                 else{
                     val chat: Chat = Chat(
-                        shopmessage.toString(), shopchatid, messagetime,shop_id = shopid, user_id = "")
+                        shopmessage.toString(), shopchatid, messagetime,shop_id = shopid, user_id = "",sender = shopName.value)
                     shopmessagesList.add(chat)
                 }
 
@@ -172,21 +176,42 @@ class PrivateChatViewModel: ViewModel() {
                     val message = sp.child("message").value.toString()
                     val  chat_id= sp.child("chat_id").value.toString()
                     val  shop_id= sp.child("shop_id").value.toString()
+                    val  messageReply= sp.child("messagReply").value.toString()
+                    val  sender= sp.child("sender").value.toString()
                     val  tags= sp.child("tags").value
                     val  time= sp.child("time").value.toString()
                     var   images= sp.child("images").value
-                    if(images!=null) {
+                    if(images!=null&&tags!=null) {
                         val chat = Chat(
                             message.toString(), chat_id, time, images as ArrayList<String>,
-                            tags as ArrayList<String>,
+                            tags as ArrayList<String> ,
                             shop_id,
                             userId.toString()
+                        ,sender=sender,messagReply = messageReply.toInt()
+                        )
+                        messagesList.add(chat)
+                    }
+                   else  if(images!=null) {
+                        val  messageReply= sp.child("messagReply").value.toString()
+                        val  sender= sp.child("sender").value.toString()
+
+                        val chat = Chat(
+                            message.toString(), chat_id, time, images as ArrayList<String>,
+                          shop_id=  shop_id,
+                            user_id= userId.toString()
+                            ,sender=sender,messagReply = messageReply.toInt()
+
                         )
                         messagesList.add(chat)
                     }
                     else{
+                        val  messageReply= sp.child("messagReply").value.toString()
+                        val  sender= sp.child("sender").value.toString()
+
                         val chat = Chat(
-                            message.toString(), chat_id, time, shop_id = shop_id, user_id = userId.toString())
+                            message.toString(), chat_id, time, shop_id = shop_id, user_id = userId.toString()
+                            ,sender=sender,messagReply = messageReply.toInt()
+                        )
                         messagesList.add(chat)
                     }
                 }

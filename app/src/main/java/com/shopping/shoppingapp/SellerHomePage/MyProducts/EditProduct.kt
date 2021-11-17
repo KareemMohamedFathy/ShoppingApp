@@ -32,6 +32,8 @@ fun EditProduct(navController: NavController,index:String,myProductsViewModel: M
     val idx = index.toInt()
     var productsList = remember { mutableStateListOf<Product>() }
     val scope = rememberCoroutineScope()
+    val context=LocalContext.current
+
     var tagsList : MutableList<String> = remember {
         mutableStateListOf<String>()}
 
@@ -51,7 +53,6 @@ fun EditProduct(navController: NavController,index:String,myProductsViewModel: M
         productsList.addAll(myProductsViewModel.productsList)
         set.addAll(productsList[idx].tags!!)
         Log.d("kuso", set.toString()+"hi")
-
     }
     tagsList=myProductsViewModel.tagsList
 
@@ -129,10 +130,16 @@ fun EditProduct(navController: NavController,index:String,myProductsViewModel: M
 
 
                     val pp=Product(name.text,price.text,description.text,productsList[idx].images,productsList[idx].shop_id,productsList[idx].product_id,arrayList,productsList[idx].time)
-                    myProductsViewModel.editProduct(idx,pp)
-                    navController.navigate(Screen.MyProducts.route){
-                        navController.popBackStack()
-                    }
+                   if(arrayList.size>0) {
+                       myProductsViewModel.editProduct(idx, pp)
+                       navController.navigate(Screen.MyProducts.route) {
+                           navController.popBackStack()
+                       }
+                   }
+                    else{
+
+                       Toast.makeText(context,"You must add at least 1 tag",Toast.LENGTH_SHORT).show()
+                   }
                 }
                              },
                 modifier = Modifier

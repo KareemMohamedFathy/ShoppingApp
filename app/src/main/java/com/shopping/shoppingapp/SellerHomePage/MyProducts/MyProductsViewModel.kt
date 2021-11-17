@@ -142,8 +142,12 @@ class MyProductsViewModel:ViewModel() {
             if (snapshot.exists()) {
                 for (sp in snapshot.children) {
                     val chat_id = sp.child("chat_id").value.toString()
+                    val shop_id = sp.child("shop_id").value.toString()
+                    val time = sp.child("time").value.toString()
+                    val message="This message is deleted"
+                    val shopChat=ShopChat(chat_id=chat_id,shop_id = shop_id,time=time,message = message)
                     FirebaseDatabase.getInstance().reference.child("ShopChat").child(chat_id)
-                        .removeValue()
+                        .setValue(shopChat)
                 }
             }
             //products.addAll(products)

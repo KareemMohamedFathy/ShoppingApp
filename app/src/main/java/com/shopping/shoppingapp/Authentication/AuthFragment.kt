@@ -58,6 +58,7 @@ import com.google.firebase.storage.UploadTask
 import com.shopping.shoppingapp.Admin.Buyers.DisplayBuyers
 import com.shopping.shoppingapp.AdminHomePage.AddTags.AddTag
 import com.shopping.shoppingapp.AdminHomePage.AdminHomePage
+import com.shopping.shoppingapp.AdminHomePage.ShopsPage.Shops
 import com.shopping.shoppingapp.R
 import com.shopping.shoppingapp.Screen
 import com.shopping.shoppingapp.DB.Shop
@@ -194,6 +195,12 @@ override fun onCreateView(
             ) {
                 AddTag(navController)
             }
+            composable(
+                route = Screen.Shops.route
+            ) {
+                Shops(navController)
+            }
+
             composable(
                 route = Screen.EditProduct.route+"/{index}",
                 arguments = listOf(
@@ -536,7 +543,7 @@ override fun onCreateView(
             var  dbReference=firebaseDatabase.getReference("Shop")
             val id=auth.currentUser!!.uid
             val storeId = dbReference.push().key.toString()
-            val shop= Shop(name, pickedImage!!,storeId,id)
+            val shop= Shop(name, pickedImage!!,storeId,id,"OnHold")
             dbReference.child(storeId).setValue(shop)
               dbReference=firebaseDatabase.getReference("User")
 
@@ -567,23 +574,18 @@ override fun onCreateView(
                     userType=choice
                     val user= User(name,email,choice,id)
                     dbReference.child(id).setValue(user)
-                    if(userType=="Seller"&&TextUtils.isEmpty(shop_id)) {
-                        Log.d("kuso",userType)
+                    if(userType=="Seller") {
                         navController.navigate(Screen.CreateShop.route)
                     }
                     else if(userType=="Buyer"){
                         navController.navigate(Screen.DisplayShops.route)
                     }
-                    else if(userType=="Seller"){
-                        navController.navigate(Screen.SellerHomePage.route)
-                    }
+
                     else if(userType=="Admin"){
                         navController.navigate(Screen.AdminHomePage.route)
                     }
                 }
-                else{
 
-                }
 
             })
 
