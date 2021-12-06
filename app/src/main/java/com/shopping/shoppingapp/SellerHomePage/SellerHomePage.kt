@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,10 +20,12 @@ import com.shopping.shoppingapp.SellerHomePage.AddProduct.AddProductActivity
 @Composable
 fun SellerHomePage(navController: NavController,sellerHomePageViewodel: SellerHomePageViewModel= viewModel()){
     var shopStatus = remember { mutableStateOf("") }
+    var userStatus = remember { mutableStateOf("") }
+
     LaunchedEffect(key1 ="" ){
     sellerHomePageViewodel.getShopStatus()
         shopStatus.value=sellerHomePageViewodel.shopStatus.value
-
+        userStatus.value=sellerHomePageViewodel.userStatus.value
     }
     Column(
         Modifier
@@ -31,17 +34,29 @@ fun SellerHomePage(navController: NavController,sellerHomePageViewodel: SellerHo
         ,horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Log.d("kusooo",shopStatus.value)
-        if(shopStatus.value=="Accepted") {
+
+
+
+        if(shopStatus.value=="Accepted"&&!userStatus.value.equals("banned")) {
             CreateButton(name = ButtonsName.POSTPRODUCT, navController)
             CreateButton(name = ButtonsName.MYSHOP, navController)
             CreateButton(name = ButtonsName.MESSAGES, navController)
-            CreateButton(name = ButtonsName.ALLSHOPS, navController)
+            CreateButton(name = ButtonsName.ALLUSERS, navController)
             CreateButton(name = ButtonsName.MYPRODUCTS, navController)
         }
-        else {
+        else if(userStatus.value.equals("banned")){
             Spacer(modifier = Modifier.height(64.dp))
-            Text(text = "Plz wait till your shop gets approved")
+            Text(text = "Your account has been suspended", fontSize = 40.sp,
+            fontWeight = FontWeight.Bold
+                )
+
+        }
+        else if(shopStatus.value.equals("Rejected")){
+            Spacer(modifier = Modifier.height(64.dp))
+            Text(text = "Plz wait till your shop gets approved", fontSize = 40.sp,
+                fontWeight = FontWeight.Bold
+            )
+
         }
 
     }
@@ -58,8 +73,9 @@ fun CreateButton(name: String, navController: NavController){
         if(ButtonsName.MYSHOP==name){
             navController.navigate(Screen.MyShop.route)
         }
-        if(ButtonsName.ALLSHOPS==name){
-            navController.navigate(Screen.DisplayShops.route)
+        if(ButtonsName.ALLUSERS==name){
+            Log.d("eren","Mikasa")
+            navController.navigate(Screen.UsersList.route)
         }
         if(ButtonsName.MYPRODUCTS==name){
             navController.navigate(Screen.MyProducts.route)

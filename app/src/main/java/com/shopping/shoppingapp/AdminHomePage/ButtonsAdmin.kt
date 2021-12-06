@@ -1,8 +1,7 @@
 package com.shopping.shoppingapp.AdminHomePage
 
 object ButtonsAdmin {
-    val RECENTLYADDED: String="Recently Added"
-    val BUYERS: String="Buyers"
+    val USERS: String="Users"
     val SHOPS: String="Shops"
     val TAGS: String="Add Tags"
 

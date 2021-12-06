@@ -1,5 +1,6 @@
 package com.shopping.shoppingapp.Authentication
 
+import UsersList
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -66,6 +67,7 @@ import com.shopping.shoppingapp.DB.User
 import com.shopping.shoppingapp.DisplayShops.DisplayShops
 import com.shopping.shoppingapp.DisplayShops.PrivateChats
 import com.shopping.shoppingapp.DisplayShops.ViewPhotos
+import com.shopping.shoppingapp.SellerHomePage.AllUsers.UsersPrivateChats
 import com.shopping.shoppingapp.SellerHomePage.MyProducts.EditProduct
 import com.shopping.shoppingapp.SellerHomePage.MyProducts.MyProducts
 import com.shopping.shoppingapp.SellerHomePage.MyShop.MyShop
@@ -199,6 +201,16 @@ override fun onCreateView(
                 route = Screen.Shops.route
             ) {
                 Shops(navController)
+            }
+            composable(
+                route = Screen.UsersPrivateChat.route
+            ) {
+                UsersPrivateChats(navController)
+            }
+            composable(
+                route = Screen.UsersList.route
+            ) {
+                UsersList(navController)
             }
 
             composable(

@@ -23,9 +23,8 @@ fun AdminHomePage(navController: NavController) {
         verticalArrangement = Arrangement.Top
     ) {
         CreateButton(name = ButtonsAdmin.SHOPS,navController)
-        CreateButton(name = ButtonsAdmin.BUYERS,navController)
+        CreateButton(name = ButtonsAdmin.USERS,navController)
         CreateButton(name = ButtonsAdmin.TAGS,navController)
-        CreateButton(name = ButtonsAdmin.RECENTLYADDED,navController)
     }
 }
 
@@ -38,7 +37,7 @@ fun CreateButton(name: String, navController: NavController){
       if(ButtonsAdmin.SHOPS==name){
          navController.navigate(Screen.Shops.route)
       }
-        if (ButtonsAdmin.BUYERS == name) {
+        if (ButtonsAdmin.USERS == name) {
             navController.navigate(Screen.Buyers.route)
             //   Log.d("AdmindisplayScreen", Screen.Buyers.route)}
         }

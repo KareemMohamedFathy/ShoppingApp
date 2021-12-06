@@ -1,5 +1,6 @@
 package com.shopping.shoppingapp.SellerHomePage
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class SellerHomePageViewModel: ViewModel() {
     var shopStatus : MutableState<String> = mutableStateOf("")
+    var userStatus : MutableState<String> = mutableStateOf("")
 
     suspend fun getShopStatus(){
         val dbref=FirebaseDatabase.getInstance().getReference()
@@ -28,6 +30,15 @@ class SellerHomePageViewModel: ViewModel() {
                 shopStatus.value = sp.child("shopStatus").value.toString()
             }
         }
+        val query1 = dbref.child("User").orderByChild("user_id").equalTo(auth.currentUser!!.uid)
+        val snapshot1 = query1.getSnapshotValue()
+        if (snapshot1.exists()) {
+            for (sp in snapshot1.children) {
+                userStatus.value = sp.child("status").value.toString()
+            }
+        }
+
+
 
     }
     suspend fun DatabaseReference.getSnapshotValue(): DataSnapshot {

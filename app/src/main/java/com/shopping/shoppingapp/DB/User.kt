@@ -5,5 +5,6 @@ data class User(
     var email:String="",
     var type:String="",
     var user_id:String="",
-    var shop_id:String=""
+    var shop_id:String="",
+    var status:String=""
 )

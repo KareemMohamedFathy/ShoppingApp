@@ -17,7 +17,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
@@ -27,40 +29,46 @@ import com.shopping.shoppingapp.Screen
 
 @Composable
  fun DisplayShops(navController: NavController, viewModel: DisplayShopViewModel = viewModel()) {
+    var userStatus = remember { mutableStateOf("") }
 
     var shopnames = remember { mutableStateListOf<String>() }
     var shoplogos = remember { mutableStateListOf<String>() }
     var shops = remember { mutableStateListOf<Shop>() }
+
     BackHandler() {
         navController.popBackStack()
     }
     LaunchedEffect(key1 = Unit){
         viewModel.getFromDb()
+        userStatus.value=viewModel.userStatus.value
+
     }
-    shopnames=(viewModel.entrees as SnapshotStateList<String>)
-    shoplogos=(viewModel.shopi as SnapshotStateList<String>)
-    shops=(viewModel.shopss as SnapshotStateList<Shop>)
+    if(userStatus.value.equals("unbanned")) {
+        shopnames = (viewModel.entrees as SnapshotStateList<String>)
+        shoplogos = (viewModel.shopi as SnapshotStateList<String>)
+        shops = (viewModel.shopss as SnapshotStateList<Shop>)
 
 
 
 
 
-    LazyColumn (
-        modifier = Modifier.fillMaxSize()
-    ){
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
 
 
-        itemsIndexed(shops){index, item ->
-            Card(modifier = Modifier
-                .height(80.dp)
-                .fillMaxWidth()
-                .padding(
-                    bottom = 2.dp,
-                    top = 2.dp
-                ),
-            ) {
-                shopview(navController, shop = shops[index])
-            }
+            itemsIndexed(shops) { index, item ->
+                Card(
+                    modifier = Modifier
+                        .height(80.dp)
+                        .fillMaxWidth()
+                        .padding(
+                            bottom = 2.dp,
+                            top = 2.dp
+                        ),
+                ) {
+                    shopview(navController, shop = shops[index])
+                }
 
 
 //                Card(
@@ -76,11 +84,17 @@ import com.shopping.shoppingapp.Screen
 //                }
 
 
+            }
+
         }
+    }
+    else if(userStatus.value.equals("banned")){
+        Spacer(modifier = Modifier.height(64.dp))
+        Text(text = "Your account has been suspended", fontSize = 40.sp,
+            fontWeight = FontWeight.Bold
+        )
 
     }
-
-
 
 }
 @Composable

@@ -22,11 +22,9 @@ class ShopsViewModel(): ViewModel() {
         val dbReference=FirebaseDatabase.getInstance().getReference()
 
         val query = dbReference.child("Shop")
-        Log.d("kuso","lol")
         val snapshot = query.getSnapshotValue()
         if (snapshot.exists()) {
             for (sp in snapshot.children) {
-                Log.d("kuso","lol3")
 
                 val shopName = sp.child("name").value.toString()
                 val shopLogo = sp.child("logo").value.toString()
